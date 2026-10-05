@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EventFlow — Event & Attendee Management</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div id="animated-background" aria-hidden="true">
+    <canvas id="gradient-canvas"></canvas>
+  </div>
+
+  <!-- ================= HERO ================= -->
+  <header class="hero">
+    <nav class="nav">
+      <a href="#" class="brand">
+        <span class="brand-mark"><i class="fa-solid fa-water"></i></span>
+        <span class="brand-name">Event<span class="accent">Flow</span></span>
+      </a>
+
+      <div class="nav-links">
+        <a href="#events" class="nav-link"><i class="fa-solid fa-calendar-days"></i> Events</a>
+        <a href="#attendees" class="nav-link"><i class="fa-solid fa-users"></i> Attendees</a>
+      </div>
+
+      <button class="btn btn-ghost" id="open-event-modal">
+        <i class="fa-solid fa-plus"></i> New Event
+      </button>
+    </nav>
+
+    <div class="hero-content">
+      <span class="pill"><i class="fa-solid fa-bolt"></i> Full-stack event management</span>
+      <h1>Create events. <span class="gradient">Manage attendees.</span> Effortlessly.</h1>
+      <p class="hero-sub">
+        EventFlow gives you a single dashboard to launch events, register attendees,
+        track capacity, and search everything in real-time.
+      </p>
+
+      <div class="hero-actions">
+        <button class="btn btn-primary" id="hero-new-event">
+          <i class="fa-solid fa-calendar-plus"></i> Create an Event
+        </button>
+        <button class="btn btn-outline" id="hero-new-attendee">
+          <i class="fa-solid fa-user-plus"></i> Register Attendee
+        </button>
+      </div>
+    </div>
+
+    <div class="hero-waves">
+      <span></span><span></span><span></span>
+    </div>
+  </header>
+
+  <!-- ================= STATS ================= -->
+  <section class="stats container">
+    <div class="stat-card glass">
+      <div class="stat-icon cyan"><i class="fa-solid fa-calendar-days"></i></div>
+      <div>
+        <p class="stat-label">Total Events</p>
+        <p class="stat-value" id="stat-events">0</p>
+      </div>
+    </div>
+
+    <div class="stat-card glass">
+      <div class="stat-icon emerald"><i class="fa-solid fa-users"></i></div>
+      <div>
+        <p class="stat-label">Total Attendees</p>
+        <p class="stat-value" id="stat-attendees">0</p>
+      </div>
+    </div>
+
+    <div class="stat-card glass">
+      <div class="stat-icon blue"><i class="fa-solid fa-chair"></i></div>
+      <div>
+        <p class="stat-label">Seats Remaining</p>
+        <p class="stat-value" id="stat-seats">0</p>
+      </div>
+    </div>
+
+    <div class="stat-card glass">
+      <div class="stat-icon violet"><i class="fa-solid fa-percent"></i></div>
+      <div>
+        <p class="stat-label">Avg. Occupancy</p>
+        <p class="stat-value" id="stat-occupancy">0%</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= EVENTS ================= -->
+  <section class="section container" id="events">
+    <div class="section-head">
+      <div>
+        <h2><i class="fa-solid fa-calendar-days"></i> Upcoming Events</h2>
+        <p class="muted">Every event, its capacity and live registration count.</p>
+      </div>
+
+      <button class="btn btn-primary" id="section-new-event">
+        <i class="fa-solid fa-plus"></i> New Event
+      </button>
+    </div>
+
+    <div id="event-grid" class="event-grid"></div>
+
+    <div id="event-empty" class="empty glass hidden">
+      <i class="fa-regular fa-calendar"></i>
+      <p>No events yet. Click <strong>New Event</strong> to get started.</p>
+    </div>
+  </section>
+
+  <!-- ================= ATTENDEES ================= -->
+  <section class="section container" id="attendees">
+    <div class="section-head">
+      <div>
+        <h2><i class="fa-solid fa-users"></i> Attendees</h2>
+        <p class="muted">Search across name, email, or event title.</p>
+      </div>
+
+      <button class="btn btn-primary" id="section-new-attendee">
+        <i class="fa-solid fa-user-plus"></i> Register Attendee
+      </button>
+    </div>
+
+    <div class="search-bar glass">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" id="search-input" placeholder="Search by attendee name, email or event name..." />
+      <button class="btn btn-ghost" id="clear-search" title="Clear">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="table-wrap glass">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Attendee</th>
+            <th>Email</th>
+            <th>Ticket</th>
+            <th>Event</th>
+            <th>Event Date</th>
+            <th class="text-right">Action</th>
+          </tr>
+        </thead>
+        <tbody id="attendee-tbody"></tbody>
+      </table>
+
+      <div id="attendee-empty" class="empty hidden">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <p>No attendees match your search.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FOOTER ================= -->
+  <!-- ================= FOOTER ================= -->
+<footer class="site-footer">
+  <div class="container footer-inner">
+
+    <!-- Column 1: Brand + tagline -->
+    <div class="footer-col footer-brand">
+      <a href="#" class="brand">
+        <span class="brand-mark"><i class="fa-solid fa-water"></i></span>
+        <span class="brand-name">Event<span class="accent">Flow</span></span>
+      </a>
+      <p class="footer-tagline">
+        A modern event &amp; attendee management dashboard built with
+        HTML, CSS, vanilla JavaScript, Express.js and SQLite.
+      </p>
+      <div class="footer-socials">
+        <a href="#" aria-label="GitHub" title="GitHub"><i class="fa-brands fa-github"></i></a>
+        <a href="#" aria-label="Twitter" title="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="#" aria-label="LinkedIn" title="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+        <a href="#" aria-label="Email" title="Email"><i class="fa-solid fa-envelope"></i></a>
+      </div>
+    </div>
+
+    <!-- Column 2: Product links -->
+    <div class="footer-col">
+      <h4>Product</h4>
+      <ul>
+        <li><a href="#events">Events</a></li>
+        <li><a href="#attendees">Attendees</a></li>
+        <li><a href="#" data-footer-open="event">Create Event</a></li>
+        <li><a href="#" data-footer-open="attendee">Register Attendee</a></li>
+      </ul>
+    </div>
+
+    <!-- Column 3: Resources -->
+    <div class="footer-col">
+      <h4>Resources</h4>
+      <ul>
+        <li><a href="/api/events" target="_blank" rel="noopener">Events API</a></li>
+        <li><a href="/api/attendees" target="_blank" rel="noopener">Attendees API</a></li>
+        <li><a href="#" id="footer-docs">Documentation</a></li>
+        <li><a href="#" id="footer-support">Support</a></li>
+      </ul>
+    </div>
+
+    <!-- Column 4: Contact -->
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul class="footer-contact">
+        <li><i class="fa-solid fa-location-dot"></i> Mumbai, India</li>
+        <li><i class="fa-solid fa-envelope"></i> hello@eventflow.dev</li>
+        <li><i class="fa-solid fa-phone"></i> +91 90000 00000</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- Bottom bar with copyright -->
+  <div class="footer-bottom">
+    <div class="container footer-bottom-inner">
+      <p class="copyright">
+        &copy; <span id="footer-year">2025</span> <strong>EventFlow</strong>. All rights reserved.
+      </p>
+      <ul class="footer-legal">
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+        <li><a href="#">Cookies</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+  <!-- ================= EVENT MODAL ================= -->
+  <div class="modal" id="event-modal" aria-hidden="true">
+    <div class="modal-backdrop" data-close></div>
+
+    <div class="modal-card glass">
+      <div class="modal-head">
+        <h3><i class="fa-solid fa-calendar-plus"></i> Create Event</h3>
+        <button class="btn-icon" data-close><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form id="event-form" novalidate>
+        <div class="field">
+          <label for="event-name">Event Name</label>
+          <input type="text" id="event-name" placeholder="e.g. Tech Summit 2025" required />
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="event-date">Date</label>
+            <input type="date" id="event-date" required />
+          </div>
+
+          <div class="field">
+            <label for="event-capacity">Max Capacity</label>
+            <input type="number" id="event-capacity" min="1" value="100" required />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="event-venue">Venue</label>
+          <input type="text" id="event-venue" placeholder="e.g. Convention Center, Mumbai" required />
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" data-close>Cancel</button>
+          <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-check"></i> Create Event
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= ATTENDEE MODAL ================= -->
+  <div class="modal" id="attendee-modal" aria-hidden="true">
+    <div class="modal-backdrop" data-close></div>
+
+    <div class="modal-card glass">
+      <div class="modal-head">
+        <h3><i class="fa-solid fa-user-plus"></i> Register Attendee</h3>
+        <button class="btn-icon" data-close><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form id="attendee-form" novalidate>
+        <div class="field">
+          <label for="attendee-event">Event</label>
+          <select id="attendee-event" required></select>
+        </div>
+
+        <div class="field">
+          <label for="attendee-name">Full Name</label>
+          <input type="text" id="attendee-name" placeholder="e.g. Jane Doe" required />
+        </div>
+
+        <div class="field">
+          <label for="attendee-email">Email Address</label>
+          <input type="email" id="attendee-email" placeholder="jane@example.com" required />
+        </div>
+
+        <div class="field">
+          <label for="attendee-ticket">Ticket Type</label>
+          <select id="attendee-ticket">
+            <option value="General">General</option>
+            <option value="VIP">VIP</option>
+            <option value="Student">Student</option>
+          </select>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" data-close>Cancel</button>
+          <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-check"></i> Register
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= TOASTS ================= -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -77,7 +77,7 @@ Browsers without WebGL2 still work because EventFlow automatically uses a CSS an
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/<your-username>/eventflow-manager.git
+git clone https://github.com/MohitKarmarkar-jpg/eventflow-manager.git
 cd eventflow-manager
 ```
 
